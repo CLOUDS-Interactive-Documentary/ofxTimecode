@@ -29,7 +29,7 @@ float ofxTimecode::getFPS(){
 unsigned long long ofxTimecode::millisForTimecode(string timecode){
     int times[4];
     if(decodeString(timecode, times)){
-               //hours						
+               //hours
     	return times[0] * 60 * 60 * 1000 + 
                //minutes
                times[1] * 60 * 1000 +
@@ -37,6 +37,23 @@ unsigned long long ofxTimecode::millisForTimecode(string timecode){
                times[2] * 1000 +
                //millis
                times[3];
+        
+    }
+	return -1;
+}
+
+//expects format HH:MM:SS.D
+unsigned long long ofxTimecode::millisForTimecode2(string timecode){
+    int times[4];
+    if(decodeString2(timecode, times)){
+        //hours
+    	return times[0] * 60 * 60 * 1000 +
+        //minutes
+        times[1] * 60 * 1000 +
+        //seconds
+        times[2] * 1000 +
+        //millis
+        times[3] * 100;
         
     }
 	return -1;
@@ -87,6 +104,7 @@ string ofxTimecode::timecodeForFrame(int frame, string millisDelimiter){
     return timecodeForMillis(millisForFrame(frame), millisDelimiter);
 }
 
+// expects: HH:MM:SS:FR
 bool ofxTimecode::decodeString(string time, int* times){
 	ofStringReplace(time, ",", ":");
     ofStringReplace(time, ";", ":");
@@ -98,5 +116,30 @@ bool ofxTimecode::decodeString(string time, int* times){
     for(int i = 0; i < split.size(); i++){
     	times[i] = ofToInt(split[i]);
     }
+    return true;
+}
+
+// expects: HH:MM:SS.D
+bool ofxTimecode::decodeString2(string time, int* times) {
+	ofStringReplace(time, ",", ":");
+    ofStringReplace(time, ";", ":");
+    vector<string> split = ofSplitString(time, ":");
+    if(split.size() != 3){
+//        ofLogError("ofxTimecode::decodeString2 -- incorrect timecode");
+        return false;
+    }
+    // parse 'HH:MM'
+    for(int i = 0; i < 2; i++){
+    	times[i] = ofToInt(split[i]);
+    }
+    // parse 'SS.D'
+    vector<string> secs = ofSplitString(split[2], ".");
+    if (secs.size() != 2) {
+//        ofLogError("ofxTimecode::decodeString2 -- incorrect timecode");
+        return false;
+    }
+    times[2] = ofToInt(secs[0]);
+    times[3] = ofToInt(secs[1]);
+    
     return true;
 }

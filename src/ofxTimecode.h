@@ -23,7 +23,10 @@ class ofxTimecode {
 	static unsigned long long millisForTimecode(string timecode);
     static float secondsForTimecode(string timecode);
     int frameForTimecode(string timecode);
-    
+
+    //these functions expect format HH:MM:SS.D
+    static unsigned long long millisForTimecode2(string timecode);
+
     int frameForSeconds(float timeInSeconds);
     int frameForMillis(unsigned long long timeInMillis);
     
@@ -38,4 +41,5 @@ class ofxTimecode {
   protected:
     float fps;
     static bool decodeString(string time, int* times);
+    static bool decodeString2(string time, int* times);
 };
