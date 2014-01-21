@@ -110,7 +110,7 @@ bool ofxTimecode::decodeString(string time, int* times){
     ofStringReplace(time, ";", ":");
     vector<string> split = ofSplitString(time, ":");
     if(split.size() != 4){
-        ofLogError("ofxTimecode::decodeString -- incorrect timecode");
+        ofLogError("ofxTimecode::decodeString -- incorrect timecode for string: " + time);
         return false;
     }
     for(int i = 0; i < split.size(); i++){
